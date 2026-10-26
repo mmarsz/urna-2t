@@ -1,0 +1,1661 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Será que a prorrogação foi injusta? · Auditoria de 15 Cidades (2º Turno 2026)</title>
+<meta name="description" content="Auditoria completa de Boletins de Urna (BU), RDV e Logs de 57.744 urnas eletrônicas em 15 cidades brasileiras no 2º turno de 2026: o impacto real da prorrogação da votação até as 19h.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Estilo editorial com foco em auditoria pública de dados
+   Cores dos candidatos: vermelho do PT para Lula; verde com contorno amarelo para Flávio. */
+:root{
+  --bg:#eef0ee; --paper:#fbfcfb; --ink:#1b1f1c; --muted:#59605b; --line:#d2d8d3; --soft:#e3e8e4;
+  --accent:#3c5a48; --accent-soft:#dce8e0;
+  --lula:#c8102e; --flavio:#00843d; --flavio2:#f2c200; --outros:#9a9fa0;
+  --ok:#1f6b45; --ok-soft:#dcefe3; --no:#a12a2a; --no-soft:#f6dede; --part:#7a5a00; --part-soft:#f6ebc9; --calc:#4a5a8a; --calc-soft:#e1e6f3;
+  --display:"Archivo","Arial Narrow",Impact,sans-serif;
+  --ui:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --text:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111412; --paper:#181c19; --ink:#e7ece8; --muted:#9fa8a2; --line:#2b322d; --soft:#222824;
+  --accent:#8cc4a2; --accent-soft:#1b2a21;
+  --lula:#ff6b6b; --flavio:#3cc26f; --flavio2:#ffd83d; --outros:#6f7573;
+  --ok:#7fd3a3; --ok-soft:#173326; --no:#f19b9b; --no-soft:#3a1c1c; --part:#e8c25a; --part-soft:#3a3016; --calc:#a9b8e6; --calc-soft:#1f2538; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111412; --paper:#181c19; --ink:#e7ece8; --muted:#9fa8a2; --line:#2b322d; --soft:#222824;
+  --accent:#8cc4a2; --accent-soft:#1b2a21;
+  --lula:#ff6b6b; --flavio:#3cc26f; --flavio2:#ffd83d; --outros:#6f7573;
+  --ok:#7fd3a3; --ok-soft:#173326; --no:#f19b9b; --no-soft:#3a1c1c; --part:#e8c25a; --part-soft:#3a3016; --calc:#a9b8e6; --calc-soft:#1f2538; color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:19px;line-height:1.6}
+a{color:inherit;text-decoration-color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:940px;margin:0 auto;padding-inline:16px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1,h2{font-family:var(--display);font-weight:900;text-transform:uppercase;margin:0;overflow-wrap:anywhere;text-wrap:balance}
+h1{font-stretch:62%;font-size:clamp(40px,9.5vw,82px);line-height:.92}
+h2{font-stretch:66%;font-weight:800;font-size:clamp(28px,6vw,44px);line-height:.95}
+h3{font-family:var(--ui);font-weight:700;font-size:21px;line-height:1.2;margin:0}
+p{margin:0}
+.lg{font-size:21px;line-height:1.55}
+.sub{color:var(--muted)}
+.note{font-size:15px;color:var(--muted);line-height:1.5}
+
+/* barra superior */
+.top-bar{border-bottom:1px solid var(--line);background:var(--bg);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.top-bar>div{max-width:940px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px}
+.top-bar a{color:var(--muted);text-decoration:none;padding-block:2px;border-bottom:2px solid transparent}
+.top-bar a:hover{color:var(--ink)}
+.top-bar a[aria-current]{color:var(--ink);border-bottom-color:var(--accent)}
+.top-bar .brand{color:var(--accent);font-weight:800}
+.theme-btn{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:999px;padding:3px 10px;cursor:pointer}
+.theme-btn:hover{color:var(--ink);border-color:var(--ink)}
+
+/* seletor rápido de cidades */
+.city-select{font-family:var(--ui);font-size:13px;font-weight:700;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+
+/* topo fixo: trilha + voltar */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px;min-height:52px;flex-wrap:wrap;padding-block:6px}
+.back{font-family:var(--ui);font-weight:700;font-size:16px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.crumbs{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center;font-family:var(--ui);font-size:15px;font-weight:600;min-width:0}
+.crumbs a{color:var(--muted);text-decoration:none}
+.crumbs a:hover{color:var(--ink);text-decoration:underline}
+.crumbs span[aria-current]{color:var(--ink)}
+.crumbs i{color:var(--line);font-style:normal}
+.who{display:flex;flex-wrap:wrap;gap:4px 14px;font-family:var(--ui);font-weight:600;font-size:14px;margin-left:auto}
+.who i{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c);margin-right:5px;vertical-align:-1px}
+
+.tick{border-top:1px solid var(--line);background:var(--paper)}
+.tick .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;min-height:38px;padding-block:5px;font-family:var(--ui);font-size:14px;font-weight:600}
+.tk-dot{width:9px;height:9px;border-radius:50%;background:var(--ok);flex:none}
+.tick #tk-main b{font-family:var(--mono);font-size:14px}
+.tk-sub{color:var(--muted);font-weight:500;font-size:13px}
+
+/* telas */
+#view{padding-block:28px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:22px;min-height:70vh}
+#view.enter{animation:in .26s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#view.enter{animation:none}}
+.live{display:flex;gap:10px;align-items:flex-start;font-family:var(--ui);font-size:15px;font-weight:600;background:var(--paper);border:1px dashed var(--accent);border-radius:6px;padding:12px 14px;line-height:1.45}
+.live .dot{flex:none;width:10px;height:10px;margin-top:5px;border-radius:50%;background:var(--accent)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;align-content:start}
+
+/* portas da tela inicial */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.door{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;text-decoration:none;background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:18px;transition:transform .15s,box-shadow .15s}
+.door:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.door .t{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.door .t b{font-family:var(--display);font-stretch:66%;font-weight:900;font-size:38px;line-height:.9;text-transform:uppercase}
+.door .t span{font-family:var(--ui);font-weight:800;font-size:14px;color:var(--accent)}
+.door p{font-size:15px;color:var(--muted);line-height:1.45}
+@media (prefers-reduced-motion:reduce){.door{transition:none}.door:hover{transform:none}}
+
+.pies{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.pie{margin:0;display:grid;gap:6px;justify-items:center;min-width:0}
+.pv{width:100%;max-width:180px;aspect-ratio:1;position:relative;overflow:hidden}
+.pv canvas{max-width:100%}
+.pie figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.warn{font-family:var(--ui);font-size:14px;line-height:1.45;background:var(--part-soft);color:var(--ink);border-left:4px solid var(--part);border-radius:4px;padding:9px 12px}
+.okbox{font-family:var(--ui);font-size:14px;line-height:1.45;background:var(--ok-soft);color:var(--ink);border-left:4px solid var(--ok);border-radius:4px;padding:9px 12px}
+.infobox{font-family:var(--ui);font-size:14px;line-height:1.45;background:var(--calc-soft);color:var(--ink);border-left:4px solid var(--calc);border-radius:4px;padding:9px 12px}
+.flag{font-family:var(--ui);font-size:12px;font-weight:700;color:var(--part);background:var(--part-soft);border-radius:999px;padding:1px 8px;white-space:nowrap}
+.flag.ok{color:var(--ok);background:var(--ok-soft)}
+.flag.calc{color:var(--calc);background:var(--calc-soft)}
+.flag.info{color:var(--accent);background:var(--accent-soft)}
+.pdiff span{display:block}.pdiff .shift{margin-top:4px;color:var(--ink)}
+.pvv{display:grid;justify-items:center;font-family:var(--mono);font-size:12px;font-weight:600;line-height:1.35}.pvv span:last-child{color:var(--muted);font-weight:500}
+.vv{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.pdiff{font-family:var(--ui);font-size:15px;text-align:center;color:var(--muted)}
+.pleg{display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--ui);font-weight:600;font-size:15px}
+.pleg i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:-2px}
+[style*="--flavio)"]>i,.gt[style*="--flavio)"] .who2 i{box-shadow:0 0 0 2px var(--flavio2)}
+
+/* barras */
+.split{display:grid;gap:3px}
+.split .lab{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap}
+.bar{display:flex;height:32px;border-radius:4px;overflow:hidden;background:var(--soft)}
+.bar span{display:flex;align-items:center;padding-inline:8px;color:#fff;font-family:var(--mono);font-weight:600;font-size:13px;white-space:nowrap;min-width:0;overflow:hidden;transition:width .4s ease}
+.bar .l{background:var(--lula)} .bar .f{background:var(--flavio);justify-content:flex-end} .bar .o{background:var(--outros);justify-content:center}
+.bar .p{background:var(--part)} .bar .k{background:var(--accent);justify-content:flex-end}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--ui);font-weight:700;font-size:14px;padding:3px 10px;border-radius:999px;border:2px solid var(--c);color:var(--c);background:var(--paper)}
+.badge{justify-self:start;font-family:var(--ui);font-weight:800;font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:2px solid var(--c);color:var(--c);background:var(--s)}
+.badge.doc{--c:var(--ok);--s:var(--ok-soft)} .badge.aberto{--c:var(--part);--s:var(--part-soft)} .badge.alegacao{--c:var(--no);--s:var(--no-soft)} .badge.calc{--c:var(--calc);--s:var(--calc-soft)}
+
+/* listas clicáveis */
+.list{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;transition:border-color .15s,background .15s;cursor:pointer}
+.row:hover{border-color:var(--ink);background:color-mix(in srgb,var(--paper) 85%,var(--accent-soft))}
+.row .nm{font-family:var(--ui);font-weight:700;font-size:17px;line-height:1.2}
+.row .nm small{display:block;font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
+.row .go{font-family:var(--ui);font-weight:800;font-size:22px;color:var(--muted);grid-row:span 2}
+.grp{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+
+/* timeline de notícias */
+.news-item{display:grid;gap:4px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:8px;text-decoration:none;transition:border-color .15s,background .15s}
+.news-item:hover{border-color:var(--accent);background:color-mix(in srgb,var(--paper) 90%,var(--accent-soft))}
+.news-time{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.news-title{font-family:var(--ui);font-weight:700;font-size:16px;line-height:1.3;color:var(--ink)}
+.news-desc{font-family:var(--text);font-size:15px;line-height:1.45;color:var(--muted)}
+
+/* crescimento + gráfico lado a lado */
+.growth{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:10px}
+.gt{display:grid;gap:4px;align-content:start;background:var(--soft);border-left:6px solid var(--c,var(--accent));border-radius:6px;padding:12px 14px}
+.who2{font-family:var(--ui);font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--c,var(--accent))}
+.who2 i{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c,var(--accent));margin-right:6px;vertical-align:-1px}
+.gbig{font-family:var(--display);font-stretch:62%;font-weight:900;font-size:clamp(40px,8.5vw,56px);line-height:.95;color:var(--c,var(--ink))}
+.gsub{font-family:var(--ui);font-size:14px;line-height:1.4;color:var(--muted)} .gsub b{color:var(--ink)}
+.nowrap{white-space:nowrap}
+.diff{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.dl{display:grid;gap:3px;background:var(--soft);border-radius:6px;padding:12px 14px}
+.dk{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dv{font-family:var(--display);font-stretch:62%;font-weight:900;font-size:clamp(32px,7vw,44px);line-height:1}
+.dd{font-family:var(--ui);font-size:15px;color:var(--muted);line-height:1.4} .dd small{font-size:13px}
+.concl{font-family:var(--ui);font-weight:600;font-size:17px;line-height:1.4;border-left:5px solid var(--c,var(--accent));padding:6px 0 6px 12px}
+.concl b{color:var(--c,var(--ink))}
+.chartwrap{display:grid;gap:8px}
+.cv{position:relative;height:300px} .cv.sm{height:140px} .cv.md{height:240px}
+.axl{display:flex;justify-content:space-between;font-family:var(--ui);font-size:13px;font-weight:700;margin-top:-4px}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden;justify-self:start;flex-wrap:wrap}
+.seg button{font-family:var(--ui);font-weight:700;font-size:15px;border:0;background:var(--paper);color:var(--ink);padding:7px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg.sm button{font-size:13px;padding:5px 11px}
+
+.rg{grid-column:1;display:flex;flex-wrap:wrap;gap:3px 14px;align-items:center;font-family:var(--ui);font-size:15px;font-weight:600}
+.rg>span i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:5px}
+.rg>span b{color:var(--c);font-weight:800}
+.rg .mut{color:var(--muted);font-weight:500;font-size:14px}
+.rg .rd{margin-left:auto;font-size:13px;font-weight:800;color:var(--c)}
+
+/* mapa de quadradinhos (zonas eleitorais) */
+.mapbox{display:grid;gap:12px}
+.tmap{display:grid;gap:5px;width:100%}
+.tile{aspect-ratio:1;border-radius:6px;display:grid;place-content:center;text-align:center;text-decoration:none;color:#fff;background:var(--bgc,var(--soft));font-family:var(--ui);font-weight:800;font-size:clamp(11px,2.8vw,15px);line-height:1.05;transition:transform .12s,background .3s,opacity .25s;border:2px solid transparent;padding:2px;cursor:pointer}
+.tile small{display:block;font-family:var(--mono);font-weight:600;font-size:clamp(9px,2vw,11px);opacity:.94}
+.tile:hover{transform:scale(1.08);border-color:var(--ink);z-index:1}
+.tile.zero{background:var(--soft);color:var(--muted);border:1px dashed var(--line)}
+.scale{display:flex;align-items:center;gap:8px;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--muted);flex-wrap:wrap}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+@media (min-width:840px){.cols.two{grid-template-columns:430px minmax(0,1fr);align-items:start}.cols.half{grid-template-columns:1fr 1fr;align-items:start}}
+
+.big{font-family:var(--display);font-stretch:62%;font-weight:900;font-size:clamp(50px,11vw,80px);line-height:.9;color:var(--accent)}
+.pool{display:grid;gap:7px}
+.pool .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.pool .r .t{grid-column:1/-1;height:11px;background:var(--soft);border-radius:3px;overflow:hidden}
+.pool .r .t i{display:block;height:100%;background:var(--c,var(--outros))}
+.pool .r b{font-family:var(--ui);font-size:15px} .pool .r span{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+
+/* filtros de seção/zona */
+.filters{display:grid;gap:12px;background:var(--soft);border-radius:8px;padding:14px}
+.frow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fctrl{display:grid;gap:4px;flex:1 1 200px}
+.fctrl label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.fctrl select,.fctrl input{font-family:var(--ui);font-size:15px;font-weight:600;padding:8px 11px;border:2px solid var(--ink);border-radius:6px;background:var(--paper);color:var(--ink);width:100%}
+.fsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,155px),1fr));gap:8px}
+.fstat{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 11px;display:grid;gap:2px}
+.fstat .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fstat .v{font-family:var(--display);font-stretch:66%;font-weight:900;font-size:28px;line-height:1}
+.fstat .s{font-family:var(--ui);font-size:13px;color:var(--muted)}
+
+/* tabela de seções */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+table.stbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;text-align:right}
+table.stbl th,table.stbl td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.stbl th{font-family:var(--ui);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--soft);position:sticky;top:0}
+table.stbl th:first-child,table.stbl td:first-child,table.stbl th:nth-child(2),table.stbl td:nth-child(2){text-align:left}
+table.stbl tbody tr{cursor:pointer;transition:background .12s}
+table.stbl tbody tr:hover{background:color-mix(in srgb,var(--paper) 80%,var(--accent-soft))}
+.btn-more{font-family:var(--ui);font-weight:800;font-size:15px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:999px;padding:8px 18px;cursor:pointer;justify-self:center}
+.btn-more:hover{background:var(--ink);color:var(--paper)}
+
+/* tabela consolidada de 15 cidades */
+.city-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px;text-align:right;background:var(--paper);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.city-tbl th,.city-tbl td{padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.city-tbl th{font-family:var(--ui);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--soft)}
+.city-tbl th:first-child,.city-tbl td:first-child{text-align:left}
+.city-tbl tr:hover td{background:color-mix(in srgb,var(--paper) 80%,var(--accent-soft))}
+.city-tbl a{text-decoration:none;font-family:var(--ui);font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
+.city-tbl a:hover{text-decoration:underline;color:var(--accent)}
+
+.src{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px;line-height:1.5}
+footer{padding-block:20px 60px;color:var(--muted);font-size:14px;display:grid;gap:6px;border-top:1px solid var(--line)}
+</style>
+</head><body>
+
+<nav class="top-bar" aria-label="Navegação rápida">
+  <div>
+    <a class="brand" href="#/">Auditoria 2026 · Prorrogação do 2º Turno</a>
+    <a href="#/" data-nav="home">Visão Geral</a>
+    <a href="#/sp" data-nav="sp">São Paulo</a>
+    <a href="#/salvador" data-nav="salvador">Salvador</a>
+    <a href="#/feira" data-nav="feira">Feira de Santana</a>
+    <a href="#/guarulhos" data-nav="guarulhos">Guarulhos</a>
+    <select class="city-select" id="quick-city" aria-label="Escolher outra cidade">
+      <option value="">+ Outras 11 Cidades de Controle...</option>
+      <option value="bh">Belo Horizonte (MG)</option>
+      <option value="curitiba">Curitiba (PR)</option>
+      <option value="portoalegre">Porto Alegre (RS)</option>
+      <option value="sbc">São Bernardo do Campo (SP)</option>
+      <option value="santoandre">Santo André (SP)</option>
+      <option value="osasco">Osasco (SP)</option>
+      <option value="cuiaba">Cuiabá (MT)</option>
+      <option value="joinville">Joinville (SC)</option>
+      <option value="vitoria_conquista">Vitória da Conquista (BA)</option>
+      <option value="blumenau">Blumenau (SC)</option>
+      <option value="paranagua">Paranaguá (PR)</option>
+    </select>
+    <a href="#/noticias" data-nav="noticias">Notícias &amp; Fatos</a>
+    <a href="#/metodologia" data-nav="metodologia">Metodologia</a>
+    <a href="https://github.com/mmarsz" target="_blank" rel="noopener">github.com/mmarsz</a>
+    <button type="button" class="theme-btn" id="theme-btn" title="Alternar tema claro/escuro">◐ Tema</button>
+  </div>
+</nav>
+
+<div class="top">
+  <div class="wrap">
+    <a class="back" id="back" href="#/" hidden><span aria-hidden="true">←</span> Voltar</a>
+    <nav class="crumbs" id="crumbs" aria-label="Você está em"></nav>
+    <div class="who" aria-hidden="true">
+      <span style="--c:var(--lula)"><i></i>Lula (13)</span>
+      <span style="--c:var(--flavio)"><i></i>Flávio (22)</span>
+      <span style="--c:var(--part)"><i></i>Prorrogada ≥18h</span>
+    </div>
+  </div>
+  <div class="tick done" id="tick" role="status">
+    <div class="wrap">
+      <span class="tk-dot" aria-hidden="true"></span>
+      <span id="tk-main">Auditoria concluída: <b>57.744 seções em 15 cidades</b> (BU + RDV + Log)</span>
+      <span id="tk-sub" class="tk-sub">RDV = BU em 100% (57.744) · Log = BU em 57.743/57.744 (99,998%)</span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="view" tabindex="-1" aria-live="polite"></main>
+
+<footer class="wrap">
+  <p id="upd"></p>
+  <p>
+    <a href="#/noticias">Cobertura da imprensa e pedidos de prorrogação</a> ·
+    <a href="#/metodologia">Fontes oficiais do TSE, decodificação ASN.1 e limites metodológicos</a> ·
+    <a href="dados/secoes_resumo.csv" download>Baixar microdados consolidados das 57.744 seções (CSV · 4,2 MB)</a>
+  </p>
+  <p>
+    Auditoria independente e código aberto por <a href="https://github.com/mmarsz" target="_blank" rel="noopener"><b>github.com/mmarsz</b></a> · Repositório: <a href="https://github.com/mmarsz/urna-2t" target="_blank" rel="noopener">github.com/mmarsz/urna-2t</a>
+  </p>
+</footer>
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="vendor/chartjs-plugin-datalabels.min.js"></script>
+<script src="dados_dashboard.js"></script>
+<script>
+(function(){
+const D = window.DASH;
+const V = document.getElementById('view');
+
+const fmt = n => Math.round(n || 0).toLocaleString('pt-BR');
+const pc = (n, d=1) => (n == null || isNaN(n)) ? '—' : Number(n).toFixed(d).replace('.', ',');
+const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '±') + fmt(Math.abs(n));
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cmp = n => n >= 1e6 ? pc(n / 1e6, 2) + ' mi' : fmt(n);
+
+/* Tema claro/escuro */
+const tBtn = document.getElementById('theme-btn');
+tBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  initCharts();
+};
+
+/* Dropdown rápido de cidades */
+const qCity = document.getElementById('quick-city');
+if(qCity){
+  qCity.onchange = () => {
+    if(qCity.value){
+      location.hash = '#/' + qCity.value;
+      qCity.value = '';
+    }
+  };
+}
+
+/* Carregamento dinâmico de seções sob demanda (mantém payload leve) */
+function carregarSecoesCidade(cid, cb){
+  window.DASH_SECOES = window.DASH_SECOES || {};
+  if(window.DASH_SECOES[cid]){
+    cb(window.DASH_SECOES[cid]);
+    return;
+  }
+  const s = document.createElement('script');
+  s.src = `dados/cidades/${cid}.js`;
+  s.onload = () => cb(window.DASH_SECOES[cid] || []);
+  s.onerror = () => cb([]);
+  document.head.appendChild(s);
+}
+
+/* Helpers de porcentagem e vantagem */
+const has = t => t && t.l != null && t.f != null && (t.l + t.f) > 0;
+function share(t){
+  if(!t) return null;
+  if(has(t)) return t.l / (t.l + t.f) * 100;
+  if(t.lp != null && t.fp != null) return t.lp / (t.lp + t.fp) * 100;
+  return null;
+}
+const marg = t => { const s = share(t); return s == null ? null : 2 * s - 100; };
+const lead = m => m >= 0 ? 'Lula' : 'Flávio';
+const leadC = m => m >= 0 ? 'var(--lula)' : 'var(--flavio)';
+const gr = (a, b) => (b - a) / a * 100;
+const gp = n => (n >= 0 ? '+' : '−') + pc(Math.abs(n), 1) + '%';
+
+/* Gráficos Chart.js */
+let CH = [], PEND = [], uid = 0;
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function initCharts(){
+  CH.forEach(c => { try{ c.destroy(); }catch(e){} });
+  CH = [];
+  if(!window.Chart){ PEND = []; return; }
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Chart.defaults.font.family = 'Archivo, system-ui, -apple-system, "Segoe UI", sans-serif';
+  Chart.defaults.color = css('--muted');
+  Chart.defaults.borderColor = css('--line');
+  for(const f of PEND){
+    const el = document.getElementById(f.id);
+    if(el) CH.push(f.make(el, reduce));
+  }
+}
+
+function pieChart(t, withOthers, label){
+  const id = 'c' + (++uid);
+  let vals = null;
+  if(t){
+    if(withOthers && t.lp != null) vals = [t.lp, t.fp, Math.max(0, 100 - t.lp - t.fp)];
+    else { const s = share(t); if(s != null) vals = [s, 100 - s]; }
+  }
+  if(!vals) return `<figure class="pie"><div class="pv wait"><span>sem dado</span></div><figcaption>${label}</figcaption></figure>`;
+  PEND.push({id, make:(el, reduce) => new Chart(el, {
+    type: 'pie',
+    plugins: [ChartDataLabels],
+    data: {
+      labels: vals.length === 3 ? ['Lula', 'Flávio', 'Outros'] : ['Lula', 'Flávio'],
+      datasets: [{
+        data: vals,
+        backgroundColor: [css('--lula'), css('--flavio'), css('--outros')].slice(0, vals.length),
+        borderColor: [css('--paper'), css('--flavio2'), css('--paper')].slice(0, vals.length),
+        borderWidth: [2, 3, 2].slice(0, vals.length)
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      animation: reduce ? false : {duration: 600},
+      plugins: {
+        legend: {display: false},
+        tooltip: {
+          callbacks: {
+            label: c => {
+              const v = has(t) ? [t.l, t.f, t.validos ? t.validos - t.l - t.f : null][c.dataIndex] : null;
+              return c.label + ': ' + pc(c.raw) + '%' + (v != null ? ' · ' + fmt(v) + ' votos' : '');
+            }
+          }
+        },
+        datalabels: {
+          color: '#fff',
+          font: {family: 'JetBrains Mono, monospace', weight: '700', size: 13},
+          formatter: (v, c) => v < 7 ? '' : (c.chart.data.labels[c.dataIndex] === 'Outros' ? '' : pc(v) + '%')
+        }
+      }
+    }
+  })});
+  const vv = has(t) ? `<span class="pvv"><span style="color:var(--lula)">Lula ${fmt(t.l)}</span><span style="color:var(--flavio)">Flávio ${fmt(t.f)}</span><span>votos válidos: ${fmt(t.validos || (t.l+t.f))}</span></span>` : '';
+  return `<figure class="pie"><div class="pv"><canvas id="${id}"></canvas></div><figcaption>${label}</figcaption>${vv}</figure>`;
+}
+
+function shiftTxt(t1, t2){
+  const m1 = marg(t1), m2 = marg(t2);
+  if(m1 == null || m2 == null) return '';
+  const s1 = share(t1), s2 = share(t2), dl = s2 - s1;
+  const quem = dl > 0 ? 'Lula' : 'Flávio', cor = dl > 0 ? 'var(--lula)' : 'var(--flavio)';
+  if((m1 >= 0) !== (m2 >= 0)) return `<b style="color:${leadC(m2)}">Virou:</b> ${lead(m1)} estava à frente no 1º turno, ${lead(m2)} terminou à frente no 2º.`;
+  const d = Math.abs(m2) - Math.abs(m1);
+  if(Math.abs(d) < 1) return `A vantagem de ${lead(m2)} ficou praticamente igual.`;
+  return `A vantagem de ${lead(m2)} ${d < 0 ? '<b>caiu' : '<b>subiu'} ${pc(Math.abs(d))} pontos</b>: <b style="color:${cor}">${quem}</b> ganhou espaço (Lula foi de ${pc(s1)}% para ${pc(s2)}% entre os dois).`;
+}
+
+function pies(t1, t2, t2label='2º turno', t1label='1º turno'){
+  const m1 = marg(t1), m2 = marg(t2);
+  return `<div class="pies">${pieChart(t1, true, t1label)}${pieChart(t2, false, t2label)}</div>
+  <p class="pdiff">
+    ${m1 != null ? `<span><b style="color:${leadC(m1)}">${lead(m1)}</b> à frente por <b>${pc(Math.abs(m1))}</b> pts no 1º turno (só os dois)</span>` : ''}
+    ${m2 != null ? `<span><b style="color:${leadC(m2)}">${lead(m2)}</b> à frente por <b>${pc(Math.abs(m2))}</b> pts no 2º turno</span>` : ''}
+    ${m1 != null && m2 != null ? `<span class="shift">${shiftTxt(t1, t2)}</span>` : ''}
+  </p>`;
+}
+
+function barDual(label, rightLabel, t){
+  if(!has(t)) return `<div class="split"><div class="lab"><span>${label}</span><span>sem votos</span></div><div class="bar"></div></div>`;
+  const l = share(t), f = 100 - l;
+  return `<div class="split">
+    <div class="lab"><span>${label}</span><span>${rightLabel || `${fmt(t.l)} × ${fmt(t.f)} votos`}</span></div>
+    <div class="bar" role="img" aria-label="${label}: Lula ${pc(l)}%, Flávio ${pc(f)}%">
+      <span class="l" style="width:${l}%">${l > 8 ? `Lula ${pc(l)}%` : ''}</span>
+      <span class="f" style="width:${f}%">${f > 8 ? `Flávio ${pc(f)}%` : ''}</span>
+    </div>
+  </div>`;
+}
+
+function diffChart(t1, t2){
+  const id = 'c' + (++uid), m1 = marg(t1), m2 = marg(t2);
+  if(m1 == null && m2 == null) return '';
+  PEND.push({id, make:(el, reduce) => {
+    const L = css('--lula'), F = css('--flavio'), ink = css('--ink');
+    const vals = [m1, m2], mx = Math.max(10, ...vals.filter(v => v != null).map(Math.abs));
+    const lim = Math.min(100, Math.ceil(mx * 1.3 / 20) * 20);
+    return new Chart(el, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: ['1º turno', '2º turno'],
+        datasets: [{
+          data: vals.map(v => v == null ? 0 : v),
+          backgroundColor: vals.map(v => v == null ? 'transparent' : (v >= 0 ? L : F)),
+          borderColor: vals.map(v => v != null && v < 0 ? css('--flavio2') : 'transparent'),
+          borderWidth: 3, borderRadius: 6, barThickness: 34
+        }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        animation: reduce ? false : {duration: 600},
+        layout: {padding: {left: 4, right: 8}},
+        plugins: {
+          legend: {display: false},
+          tooltip: {callbacks: {label: c => lead(c.raw) + ' à frente por ' + pc(Math.abs(c.raw)) + ' pontos'}},
+          datalabels: {
+            anchor: c => c.dataset.data[c.dataIndex] < 0 ? 'start' : 'end',
+            align: c => {
+              const v = c.dataset.data[c.dataIndex];
+              const small = Math.abs(v) < lim * 0.25;
+              return v < 0 ? (small ? 'left' : 'right') : (small ? 'right' : 'left');
+            },
+            offset: 6, clamp: true,
+            color: c => Math.abs(c.dataset.data[c.dataIndex]) < lim * 0.25 ? ink : '#fff',
+            font: {family: 'JetBrains Mono, monospace', weight: '700', size: 13},
+            formatter: v => pc(Math.abs(v)) + ' pts'
+          }
+        },
+        scales: {
+          x: {min: -lim, max: lim, ticks: {stepSize: lim / 2, callback: v => v === 0 ? '0' : Math.abs(v)},
+              grid: {color: c => c.tick.value === 0 ? ink : css('--line'), lineWidth: c => c.tick.value === 0 ? 2 : 1}},
+          y: {grid: {display: false}, ticks: {font: {size: 14, weight: '700'}, color: ink}}
+        }
+      }
+    });
+  }});
+  return `<div class="cv sm"><canvas id="${id}"></canvas></div>
+  <div class="axl"><span style="color:var(--flavio)">← Flávio na frente</span><span style="color:var(--lula)">Lula na frente →</span></div>`;
+}
+
+function barsChart(t1, t2){
+  const id = 'c' + (++uid);
+  const data = mode => {
+    const v = (t, k) => { if(!t) return null; if(mode === 'votos') return t[k]; const s = share(t); return k === 'l' ? s : 100 - s; };
+    return [[v(t1, 'l'), v(t2, 'l')], [v(t1, 'f'), v(t2, 'f')]];
+  };
+  let mode = 'pct';
+  const VV = [[t1.l, t2.l], [t1.f, t2.f]];
+  const PP = data('pct');
+  PEND.push({id, make:(el, reduce) => {
+    const L = css('--lula'), F = css('--flavio'), ink = css('--ink');
+    const d = data(mode);
+    const ch = new Chart(el, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: ['1º turno (04/10)', '2º turno (25/10)'],
+        datasets: [
+          {label: 'Lula (13)', data: d[0], backgroundColor: L, borderRadius: 6, maxBarThickness: 90},
+          {label: 'Flávio (22)', data: d[1], backgroundColor: F, borderColor: css('--flavio2'), borderWidth: {top:3,left:3,right:3,bottom:0}, borderRadius: 6, maxBarThickness: 90}
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: reduce ? false : {duration: 600},
+        layout: {padding: {top: 42}},
+        plugins: {
+          legend: {position: 'bottom', labels: {boxWidth: 14, font: {size: 14, weight: '600'}}},
+          datalabels: {
+            anchor: 'end', align: 'end', color: ink, textAlign: 'center',
+            font: {family: 'JetBrains Mono, monospace', weight: '600', size: 12},
+            formatter: (v, c) => {
+              const p = PP[c.datasetIndex][c.dataIndex], n = VV[c.datasetIndex][c.dataIndex];
+              return mode === 'pct' ? [pc(p) + '%', cmp(n)] : [cmp(n), pc(p) + '%'];
+            }
+          }
+        },
+        scales: {
+          x: {grid: {display: false}, ticks: {font: {size: 14, weight: '700'}, color: ink}},
+          y: {beginAtZero: true, suggestedMax: mode === 'pct' ? 100 : undefined, ticks: {callback: v => mode === 'pct' ? v + '%' : cmp(v)}}
+        }
+      }
+    });
+    const box = el.closest('.chartwrap');
+    if(box){
+      box.querySelectorAll('[data-cm]').forEach(b => b.onclick = () => {
+        mode = b.dataset.cm;
+        box.querySelectorAll('[data-cm]').forEach(x => x.setAttribute('aria-pressed', x === b));
+        const nd = data(mode);
+        ch.data.datasets[0].data = nd[0];
+        ch.data.datasets[1].data = nd[1];
+        ch.options.scales.y.suggestedMax = mode === 'pct' ? 100 : undefined;
+        ch.update();
+      });
+    }
+    return ch;
+  }});
+  return `<div class="chartwrap">
+    <div class="seg sm" role="group" aria-label="Mostrar em">
+      <button type="button" data-cm="pct" aria-pressed="true">% entre os dois</button>
+      <button type="button" data-cm="votos" aria-pressed="false">Votos absolutos</button>
+    </div>
+    <div class="cv"><canvas id="${id}"></canvas></div>
+  </div>`;
+}
+
+function compareBlock(t1, t2){
+  const m1 = marg(t1), m2 = marg(t2), s1 = share(t1), s2 = share(t2);
+  const d = Math.abs(m2) - Math.abs(m1);
+  const concl = (m1 >= 0) !== (m2 >= 0)
+    ? `<p class="concl" style="--c:var(--no)">Virou: no 1º turno quem estava na frente era ${lead(m1)}, no 2º foi ${lead(m2)}.</p>`
+    : `<p class="concl" style="--c:${d < 0 ? (m2 >= 0 ? 'var(--flavio)' : 'var(--lula)') : leadC(m2)}">A diferença ${d < 0 ? 'diminuiu' : 'aumentou'} <b>${pc(Math.abs(d))} pontos</b> no 2º turno: ${lead(m2)} terminou na frente com <b>${pc(Math.max(s2, 100-s2))}%</b> dos votos válidos.</p>`;
+  const oneG = (k, nm, cor) => `<div class="gt" style="--c:var(${cor})"><span class="who2"><i></i>${nm}</span><b class="gbig">${gp(gr(t1[k], t2[k]))}</b><span class="gsub">votos em relação ao 1º turno<br><b>${fmt(t1[k])}</b> → <b>${fmt(t2[k])}</b> <span class="nowrap">(${sgn(t2[k] - t1[k])})</span></span></div>`;
+  return `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <h3>Resultado Oficial: 1º Turno × 2º Turno</h3>
+      <span class="badge doc">Documentado · Totalização Oficial</span>
+    </div>
+    <div class="diff">
+      <div class="dl">
+        <span class="dk">1º turno (04/10/2026)</span>
+        <b class="dv" style="color:${leadC(m1)}">${lead(m1)} +${pc(Math.abs(m1))} pts</b>
+        <span class="dd">Entre os dois: Lula ${pc(s1)}% × Flávio ${pc(100-s1)}%<br><span class="vv">Lula ${fmt(t1.l)} × Flávio ${fmt(t1.f)}</span><br><small>Com todos os candidatos: Lula ${pc(t1.lp, 2)}% × Flávio ${pc(t1.fp, 2)}%</small></span>
+      </div>
+      <div class="dl">
+        <span class="dk">2º turno (25/10/2026)</span>
+        <b class="dv" style="color:${leadC(m2)}">${lead(m2)} +${pc(Math.abs(m2))} pts</b>
+        <span class="dd">Votos válidos: Lula ${pc(s2, 2)}% × Flávio ${pc(100-s2, 2)}%<br><span class="vv">Lula ${fmt(t2.l)} × Flávio ${fmt(t2.f)}</span><br><small>Comparecimento: ${fmt(t2.comp)} de ${fmt(t2.aptos)} aptos (${pc(t2.comp/t2.aptos*100, 2)}%) · Brancos ${fmt(t2.brancos)} · Nulos ${fmt(t2.nulos)}</small></span>
+      </div>
+    </div>
+    ${concl}
+    ${diffChart(t1, t2)}
+    <h3 style="margin-top:6px">1º e 2º turno lado a lado</h3>
+    ${barsChart(t1, t2)}
+    <h3>Quanto cada candidato cresceu do 1º para o 2º turno</h3>
+    <div class="growth">
+      ${oneG('l', 'Lula (13)', '--lula')}
+      ${oneG('f', 'Flávio Bolsonaro (22)', '--flavio')}
+      <div class="gt" style="--c:var(--accent)">
+        <span class="who2"><i></i>Comparecimento</span>
+        <b class="gbig">${gp(gr(t1.comp, t2.comp))}</b>
+        <span class="gsub">eleitores que compareceram<br><b>${fmt(t1.comp)}</b> → <b>${fmt(t2.comp)}</b> <span class="nowrap">(${sgn(t2.comp - t1.comp)})</span></span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* Gráfico hora a hora */
+function hourlyChartBlock(c){
+  const id = 'c' + (++uid);
+  const hrs = ['8','9','10','11','12','13','14','15','16','17','18','19'];
+  const lblHrs = hrs.map(h => h + 'h');
+  const vAll = hrs.map(h => c.total.votos_hora[h] || 0);
+  const vPos18 = hrs.map(h => c.pos18.votos_hora[h] || 0);
+  const vAte18 = hrs.map(h => c.ate18.votos_hora[h] || 0);
+
+  const encLabels = D.faixas_enc;
+  const encData = encLabels.map(k => c.total.enc_bins[k] || 0);
+
+  let mode = 'pos17';
+  PEND.push({id, make:(el, reduce) => {
+    const accent = css('--accent'), part = css('--part'), calc = css('--calc'), ink = css('--ink');
+    const getCfg = m => {
+      if(m === 'all'){
+        return {
+          labels: lblHrs,
+          datasets: [
+            {label: 'Seções que fecharam <18h', data: vAte18, backgroundColor: accent, borderRadius: 4},
+            {label: 'Seções prorrogadas (encerramento ≥18h)', data: vPos18, backgroundColor: part, borderRadius: 4}
+          ],
+          stacked: true,
+          note: 'Total de votos computados no log em cada hora do dia 25/10/2026 (horário de Brasília).'
+        };
+      }
+      if(m === 'pos17'){
+        return {
+          labels: ['17h (17:00–17:59 · Fila normal)', '18h (18:00–18:59 · Prorrogado)', '19h (19:00+ · Prorrogado)'],
+          datasets: [
+            {label: 'Seções que fecharam <18h (fila das 17h)', data: [c.ate18.votos_hora['17']||0, c.ate18.votos_hora['18']||0, c.ate18.votos_hora['19']||0], backgroundColor: accent, borderRadius: 6, maxBarThickness: 70},
+            {label: 'Seções prorrogadas (abertas ≥18h)', data: [c.pos18.votos_hora['17']||0, c.pos18.votos_hora['18']||0, c.pos18.votos_hora['19']||0], backgroundColor: part, borderRadius: 6, maxBarThickness: 70}
+          ],
+          stacked: false,
+          note: 'Repare a diferença entre a fila das 17h (presente em quase todas as seções) e as horas 18h e 19h (efetivamente pós-prorrogação).'
+        };
+      }
+      if(m === 'enc'){
+        return {
+          labels: encLabels,
+          datasets: [{
+            label: 'Nº de seções por faixa de encerramento (BU)',
+            data: encData,
+            backgroundColor: encLabels.map(l => l.startsWith('18') || l.startsWith('19') ? part : accent),
+            borderRadius: 5, maxBarThickness: 64
+          }],
+          stacked: false,
+          note: 'Horário de encerramento gravado no Boletim de Urna (BU). Mais de 80% das urnas fecharam entre 17:00 e 17:19.'
+        };
+      }
+      return {
+        labels: ['1º Turno (04/10) pós-17h', '2º Turno (25/10) fila normal 17h', '2º Turno (25/10) nas prorrogadas'],
+        datasets: [{
+          label: 'Votos computados após as 17h (Brasília)',
+          data: [c.total.votos_1t_pos17, c.ate18.votos_pos17, c.pos18.votos_pos17],
+          backgroundColor: [calc, accent, part],
+          borderRadius: 6, maxBarThickness: 80
+        }],
+        stacked: false,
+        note: 'No 1º turno (cédula com 6 cargos), a fila normal após as 17h na mesma urna foi ordens de magnitude maior que todo o volume pós-17h do 2º turno.'
+      };
+    };
+
+    const initCfg = getCfg(mode);
+    const ch = new Chart(el, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {labels: initCfg.labels, datasets: initCfg.datasets},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: reduce ? false : {duration: 500},
+        layout: {padding: {top: 30}},
+        plugins: {
+          legend: {position: 'bottom', labels: {boxWidth: 13, font: {size: 13, weight: '600'}}},
+          datalabels: {
+            anchor: 'end', align: 'end', color: ink,
+            font: {family: 'JetBrains Mono, monospace', weight: '700', size: 11},
+            formatter: v => v > 0 ? cmp(v) : ''
+          }
+        },
+        scales: {
+          x: {stacked: initCfg.stacked, grid: {display: false}, ticks: {font: {size: 12, weight: '700'}, color: ink}},
+          y: {stacked: initCfg.stacked, beginAtZero: true, ticks: {callback: v => cmp(v)}}
+        }
+      }
+    });
+
+    const box = el.closest('.chartwrap');
+    const noteEl = box.querySelector('.chart-note');
+    box.querySelectorAll('[data-hm]').forEach(b => b.onclick = () => {
+      mode = b.dataset.hm;
+      box.querySelectorAll('[data-hm]').forEach(x => x.setAttribute('aria-pressed', x === b));
+      const cfg = getCfg(mode);
+      ch.data.labels = cfg.labels;
+      ch.data.datasets = cfg.datasets;
+      ch.options.scales.x.stacked = cfg.stacked;
+      ch.options.scales.y.stacked = cfg.stacked;
+      noteEl.textContent = cfg.note;
+      ch.update();
+    });
+    return ch;
+  }});
+
+  return `<div class="chartwrap">
+    <div class="seg sm" role="group" aria-label="Visualização de horários">
+      <button type="button" data-hm="pos17" aria-pressed="true">Fila 17h vs. Prorrogação 18h+</button>
+      <button type="button" data-hm="all" aria-pressed="false">Todas as horas (8h–19h)</button>
+      <button type="button" data-hm="enc" aria-pressed="false">Horário de encerramento (BU)</button>
+      <button type="button" data-hm="1tvs2t" aria-pressed="false">Pós-17h: 1ºT × 2ºT</button>
+    </div>
+    <div class="cv"><canvas id="${id}"></canvas></div>
+    <p class="note chart-note">Repare a diferença entre a fila das 17h (presente em quase todas as seções) e as horas 18h e 19h (efetivamente pós-prorrogação).</p>
+  </div>`;
+}
+
+/* Bloco de auditoria da prorrogação */
+function prorrogacaoCard(titulo, total, pos18, ate18, showChartObj, notaStatus){
+  const pctSecPos18 = total.n_secoes ? (pos18.n_secoes / total.n_secoes * 100) : 0;
+  const compPos18 = pos18.aptos ? (pos18.comp / pos18.aptos * 100) : 0;
+  const compAte18 = ate18.aptos ? (ate18.comp / ate18.aptos * 100) : 0;
+  const sPos18 = share(pos18), sAte18 = share(ate18);
+  const diffComp = compPos18 - compAte18;
+  const diffLula = (sPos18 != null && sAte18 != null) ? (sPos18 - sAte18) : null;
+
+  return `<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <h3>${esc(titulo)}</h3>
+      <span class="badge ${pos18.n_secoes > 0 ? 'aberto' : 'doc'}">${pos18.n_secoes > 0 ? `${fmt(pos18.n_secoes)} seções abertas ≥18h (${pc(pctSecPos18)}%)` : 'Sem prorrogação (100% fecharam <18h)'}</span>
+    </div>
+
+    ${notaStatus ? `<p class="warn"><b>Atenção:</b> ${esc(notaStatus)}</p>` : ''}
+
+    <div class="infobox">
+      <b>Distinção entre fila das 17h e prorrogação (pós-18h):</b> Em todas as cidades do Brasil, é perfeitamente normal haver votos registrados entre 17:00 e 17:59 (eleitores que receberam senha na fila pontualmente às 17h). O efeito direto da prorrogação de Zanin ocorre <b>apenas nas seções com encerramento &ge; 18:00</b> e nos votos computados <b>a partir das 18h00</b>.
+    </div>
+
+    <div class="growth">
+      <div class="gt" style="--c:var(--part)">
+        <span class="who2"><i></i>Seções abertas ≥ 18h</span>
+        <b class="gbig">${fmt(pos18.n_secoes)}</b>
+        <span class="gsub">de ${fmt(total.n_secoes)} seções (${pc(pctSecPos18)}%)<br>em <b>${fmt(pos18.n_locais)}</b> de ${fmt(total.n_locais)} locais de votação</span>
+      </div>
+      <div class="gt" style="--c:var(--no)">
+        <span class="who2"><i></i>Votos pós-18h (estendido)</span>
+        <b class="gbig">${fmt(pos18.votos_pos18)}</b>
+        <span class="gsub">18h: <b>${fmt(pos18.votos_hora['18']||0)}</b> · 19h: <b>${fmt(pos18.votos_hora['19']||0)}</b><br>(Mais ${fmt(pos18.votos_17h)} às 17h)</span>
+      </div>
+      <div class="gt" style="--c:var(--accent)">
+        <span class="who2"><i></i>Abertas sem voto pós-17h</span>
+        <b class="gbig">${fmt(pos18.sem_voto_pos17)}</b>
+        <span class="gsub">${pos18.n_secoes ? `<b>${pc(pos18.sem_voto_pos17/pos18.n_secoes*100)}%</b> das seções prorrogadas` : 'Nenhuma seção prorrogada'}<br>ficaram abertas com <b>zero votos</b></span>
+      </div>
+      <div class="gt" style="--c:var(--calc)">
+        <span class="who2"><i></i>Fila pós-17h: 1ºT vs 2ºT</span>
+        <b class="gbig">${fmt(total.votos_1t_pos17)}</b>
+        <span class="gsub">votos pós-17h no <b>1º turno</b> (mesmas urnas)<br>contra <b>${fmt(total.votos_pos17)}</b> no 2ºT (fila normal + prorrogadas)</span>
+      </div>
+    </div>
+
+    ${pos18.n_secoes > 0 ? `
+    <h3 style="margin-top:6px">Comparativo: Seções Prorrogadas (≥18h) × Seções que Fecharam às 17h</h3>
+    <div class="diff">
+      <div class="dl">
+        <span class="dk">Seções Prorrogadas (encerramento ≥ 18:00) · ${fmt(pos18.n_secoes)} seções</span>
+        <b class="dv" style="color:var(--part)">Comparecimento ${pc(compPos18, 2)}%</b>
+        <span class="dd">
+          <b>${fmt(pos18.comp)}</b> votos de ${fmt(pos18.aptos)} aptos<br>
+          Lula <b>${pc(sPos18, 2)}%</b> (${fmt(pos18.l)}) × Flávio <b>${pc(100-sPos18, 2)}%</b> (${fmt(pos18.f)})<br>
+          <small>Votos após as 18h nelas: <b>${fmt(pos18.votos_pos18)}</b> (${pc(pos18.votos_pos18 / pos18.comp * 100, 2)}% dos votos dessas seções)</small>
+        </span>
+      </div>
+      <div class="dl">
+        <span class="dk">Seções Normais (encerramento &lt; 18:00) · ${fmt(ate18.n_secoes)} seções</span>
+        <b class="dv" style="color:var(--accent)">Comparecimento ${pc(compAte18, 2)}%</b>
+        <span class="dd">
+          <b>${fmt(ate18.comp)}</b> votos de ${fmt(ate18.aptos)} aptos<br>
+          Lula <b>${pc(sAte18, 2)}%</b> (${fmt(ate18.l)}) × Flávio <b>${pc(100-sAte18, 2)}%</b> (${fmt(ate18.f)})<br>
+          <small>Votos pós-17h nelas (fila normal das 17h): <b>${fmt(ate18.votos_pos17)}</b> (${pc(ate18.votos_pos17 / ate18.comp * 100, 2)}% dos votos dessas seções)</small>
+        </span>
+      </div>
+    </div>
+    ${barDual(`Nas ${fmt(pos18.n_secoes)} seções prorrogadas (≥18h)`, `Comp. ${pc(compPos18, 1)}% · ${fmt(pos18.votos_pos18)} votos pós-18h`, pos18)}
+    ${barDual(`Nas ${fmt(ate18.n_secoes)} seções normais (<18h)`, `Comp. ${pc(compAte18, 1)}% · ${fmt(ate18.votos_pos17)} votos fila 17h`, ate18)}
+    <p class="concl" style="--c:var(--accent)">
+      O comparecimento nas seções prorrogadas foi de <b>${pc(compPos18, 2)}%</b> contra <b>${pc(compAte18, 2)}%</b> nas que fecharam no horário padrão (${ diffComp >= 0 ? '+' : '−' }${pc(Math.abs(diffComp), 2)} p.p.).
+      ${diffLula != null ? `Na divisão dos válidos, Lula teve <b>${pc(sPos18, 2)}%</b> nas prorrogadas vs. <b>${pc(sAte18, 2)}%</b> nas demais (${diffLula >= 0 ? '+' : '−'}${pc(Math.abs(diffLula), 2)} p.p.).` : ''}
+    </p>
+    ` : `
+    <p class="okbox"><b>Grupo de Controle (100% no horário padrão):</b> Todas as ${fmt(total.n_secoes)} seções encerraram entre 17:00 e 17:59 (horário de Brasília), com ${fmt(total.votos_pos17)} votos de fila normal das 17h (contra ${fmt(total.votos_1t_pos17)} no 1º turno) e <b>zero votos após as 18h</b>.</p>
+    `}
+
+    ${showChartObj ? `<h3 style="margin-top:6px">Distribuição de Horários e Comparativo com 1º Turno</h3>${hourlyChartBlock(showChartObj)}` : ''}
+  </div>`;
+}
+
+/* Mapa de quadradinhos das Zonas Eleitorais */
+let zMapMode = 'prorrog';
+function zoneTileStyle(z, mode){
+  if(mode === 'voto'){
+    const s = share(z.total);
+    if(s == null) return ['', ''];
+    const base = s >= 50 ? 'var(--lula)' : 'var(--flavio)';
+    const k = Math.min(100, 38 + Math.abs(s - 50) * 2.4);
+    return [`--bgc:color-mix(in oklab,${base} ${k}%,var(--paper));${k < 60 ? 'color:var(--ink)' : ''}`, (s >= 50 ? 'L ' + Math.round(s) : 'F ' + Math.round(100 - s)) + '%'];
+  }
+  if(mode === 'prorrog'){
+    const n = z.pos18.n_secoes, tot = z.total.n_secoes;
+    const p = tot ? (n / tot * 100) : 0;
+    if(n === 0) return ['ZERO', '0%'];
+    const k = Math.min(100, 35 + p * 1.1);
+    return [`--bgc:color-mix(in oklab,var(--part) ${k}%,var(--paper));${k < 65 ? 'color:var(--ink)' : ''}`, `${pc(p, 0)}%`];
+  }
+  if(mode === 'vp17'){
+    const v = z.pos18.votos_pos18;
+    if(v === 0) return ['ZERO', '0v'];
+    const k = Math.min(100, 38 + Math.min(v, 250) / 250 * 62);
+    return [`--bgc:color-mix(in oklab,var(--no) ${k}%,var(--paper));${k < 62 ? 'color:var(--ink)' : ''}`, `${v}v`];
+  }
+  const comp = z.total.aptos ? (z.total.comp / z.total.aptos * 100) : 0;
+  const k = Math.min(100, Math.max(30, (comp - 70) * 4.5));
+  return [`--bgc:color-mix(in oklab,var(--accent) ${k}%,var(--paper));${k < 62 ? 'color:var(--ink)' : ''}`, `${pc(comp, 1)}%`];
+}
+
+function renderZoneTiles(c){
+  return c.zonas.map(z => {
+    const [st, sub] = zoneTileStyle(z, zMapMode);
+    const isZero = st === 'ZERO';
+    return `<a class="tile${isZero ? ' zero' : ''}" style="${isZero ? '' : st}" href="#/${c.id}/zona/${z.zona}" title="Zona ${z.zona} — ${esc(z.nome)}: ${z.pos18.n_secoes}/${z.total.n_secoes} prorrogadas, ${z.pos18.votos_pos18} votos pós-18h">
+      Z${z.zona.slice(-3)}<small>${sub}</small>
+    </a>`;
+  }).join('');
+}
+
+function zoneScaleTxt(mode){
+  if(mode === 'voto') return '<span style="color:var(--flavio)">■ Flávio na frente</span> <span style="color:var(--lula)">■ Lula na frente</span> <span>· toque na Zona para abrir</span>';
+  if(mode === 'prorrog') return '<span style="color:var(--part)">■ % de seções abertas ≥18h na Zona</span> <span>· tracejado = 0 seções prorrogadas</span>';
+  if(mode === 'vp17') return '<span style="color:var(--no)">■ Votos pós-18h nas seções prorrogadas</span> <span>· tracejado = 0 votos</span>';
+  return '<span style="color:var(--accent)">■ Taxa de comparecimento (%) na Zona</span>';
+}
+
+function zoneMapBlock(c){
+  if(!c.zonas || c.zonas.length <= 1) return '';
+  return `<div class="mapbox card" id="zmap-card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+      <h3>Mapa das ${c.zonas.length} Zonas Eleitorais de ${esc(c.nome)}</h3>
+      <span class="note">Toque em uma Zona para ver locais e seções</span>
+    </div>
+    <div class="seg sm" role="group" aria-label="Modo do mapa de zonas">
+      <button type="button" data-zm="prorrog" aria-pressed="${zMapMode==='prorrog'}">% Seções prorrogadas (≥18h)</button>
+      <button type="button" data-zm="vp17" aria-pressed="${zMapMode==='vp17'}">Votos pós-18h (prorrogadas)</button>
+      <button type="button" data-zm="voto" aria-pressed="${zMapMode==='voto'}">Resultado 2ºT (Lula × Flávio)</button>
+      <button type="button" data-zm="comp" aria-pressed="${zMapMode==='comp'}">Comparecimento (%)</button>
+    </div>
+    <div class="tmap" id="ztmap" style="grid-template-columns:repeat(${c.cols_grid},minmax(0,1fr));max-width:${Math.max(340, c.cols_grid * 78)}px">
+      ${renderZoneTiles(c)}
+    </div>
+    <div class="scale" id="zscale">${zoneScaleTxt(zMapMode)}</div>
+  </div>`;
+}
+
+function zoneRow(cid, z){
+  const s = share(z.total), m = marg(z.total);
+  const comp = z.total.aptos ? (z.total.comp / z.total.aptos * 100) : 0;
+  const pSec = z.total.n_secoes ? (z.pos18.n_secoes / z.total.n_secoes * 100) : 0;
+  return `<a class="row" href="#/${cid}/zona/${z.zona}">
+    <span class="nm">Zona ${z.zona} ${z.nome ? `· ${esc(z.nome)}` : ''}<small>${esc(z.bairros || '')} · ${fmt(z.total.n_secoes)} seções (${fmt(z.total.n_locais)} locais) · Comp. ${pc(comp, 1)}%</small></span>
+    <span class="go" aria-hidden="true">›</span>
+    <span class="rg">
+      <span><b style="color:${leadC(m)}">${lead(m)} ${pc(Math.max(s, 100-s), 1)}%</b> <span class="mut">(${fmt(z.total.l)} × ${fmt(z.total.f)})</span></span>
+      ${z.pos18.n_secoes > 0
+        ? `<span class="flag">${z.pos18.n_secoes}/${z.total.n_secoes} prorrogadas (${pc(pSec, 0)}%)</span><span class="flag">${z.pos18.votos_pos18} votos pós-18h</span>`
+        : `<span class="flag ok">0 prorrogadas</span>`}
+      <b class="rd" style="--c:${z.pos18.n_secoes > 0 ? 'var(--part)' : 'var(--muted)'}">${z.pos18.n_secoes > 0 ? `${z.pos18.votos_hora['18']||0}v às 18h` : 'fechou 17h'}</b>
+    </span>
+  </a>`;
+}
+
+/* Explorador interativo de Seções carregado sob demanda */
+function mountSectionExplorer(c, fixedZona){
+  const wrap = document.getElementById('sec-explorer');
+  if(!wrap) return;
+  const statusNote = wrap.querySelector('#sec-load-status');
+
+  carregarSecoesCidade(c.id, secoesList => {
+    if(statusNote) statusNote.remove();
+    c.secoes = secoesList;
+
+    const selZona = wrap.querySelector('#f-zona');
+    const selSort = wrap.querySelector('#f-sort');
+    const inpSearch = wrap.querySelector('#f-search');
+    const sumBox = wrap.querySelector('#f-sum');
+    const barBox = wrap.querySelector('#f-bar');
+    const tbody = wrap.querySelector('#f-tbody');
+    const btnMore = wrap.querySelector('#f-more');
+
+    let statusFilter = fixedZona ? 'all' : (c.pos18.n_secoes > 0 ? 'pos18' : 'all');
+    let limit = 60;
+
+    const zMap = {};
+    c.zonas.forEach(z => { zMap[z.zona] = z.nome; });
+
+    function update(){
+      const zVal = fixedZona || (selZona ? selZona.value : 'all');
+      const q = (inpSearch.value || '').trim().toLowerCase();
+      const sortBy = selSort.value;
+
+      const filtered = c.secoes.filter(s => {
+        if(zVal !== 'all' && s[0] !== zVal) return false;
+        const isPos18 = s[10] >= '18:00';
+        const vp17 = s[13];
+        const vp18 = (s[18] + s[19]);
+        if(statusFilter === 'pos18' && !isPos18) return false;
+        if(statusFilter === 'pos18_voto' && !(isPos18 && vp18 > 0)) return false;
+        if(statusFilter === 'pos18_zero' && !(isPos18 && vp17 === 0)) return false;
+        if(statusFilter === 'ate18_fila' && !(!isPos18 && vp17 > 0)) return false;
+        if(q){
+          const hay = `${s[0]} ${s[1]} ${s[2]} ${zMap[s[0]] || ''}`.toLowerCase();
+          if(!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      filtered.sort((a, b) => {
+        if(sortBy === 'vp18') return ((b[18]+b[19]) - (a[18]+a[19])) || (b[13] - a[13]);
+        if(sortBy === 'vp17') return (b[13] - a[13]) || (b[10].localeCompare(a[10]));
+        if(sortBy === 'ult') return (b[11] || '').localeCompare(a[11] || '');
+        if(sortBy === 'enc') return (b[10] || '').localeCompare(a[10] || '');
+        if(sortBy === 'vp17_1t') return (b[16] - a[16]);
+        if(sortBy === 'lula'){
+          const pa = (a[5]+a[6]) ? a[5]/(a[5]+a[6]) : 0;
+          const pb = (b[5]+b[6]) ? b[5]/(b[5]+b[6]) : 0;
+          return pb - pa;
+        }
+        if(sortBy === 'flavio'){
+          const pa = (a[5]+a[6]) ? a[6]/(a[5]+a[6]) : 0;
+          const pb = (b[5]+b[6]) ? b[6]/(b[5]+b[6]) : 0;
+          return pb - pa;
+        }
+        if(sortBy === 'comp'){
+          const ca = a[3] ? a[4]/a[3] : 0, cb = b[3] ? b[4]/b[3] : 0;
+          return cb - ca;
+        }
+        return a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]);
+      });
+
+      let aptos = 0, comp = 0, v13 = 0, v22 = 0, vp17 = 0, v17 = 0, v18 = 0, v19 = 0, vp17_1t = 0, nPos18 = 0;
+      const locaisSet = new Set();
+      for(const s of filtered){
+        locaisSet.add(s[0] + ':' + s[2]);
+        aptos += s[3]; comp += s[4]; v13 += s[5]; v22 += s[6];
+        vp17 += s[13]; vp17_1t += s[16];
+        v17 += s[17]; v18 += s[18]; v19 += s[19];
+        if(s[10] >= '18:00') nPos18++;
+      }
+      const compPct = aptos ? (comp / aptos * 100) : 0;
+      sumBox.innerHTML = `
+        <div class="fstat"><span class="k">Seções filtradas</span><b class="v">${fmt(filtered.length)}</b><span class="s">${fmt(locaisSet.size)} locais · ${fmt(nPos18)} abertas ≥18h</span></div>
+        <div class="fstat"><span class="k">Comparecimento</span><b class="v">${pc(compPct, 1)}%</b><span class="s">${fmt(comp)} de ${fmt(aptos)} aptos</span></div>
+        <div class="fstat"><span class="k">Votos Pós-18h (estendido)</span><b class="v" style="color:var(--no)">${fmt(v18 + v19)}</b><span class="s">18h: ${fmt(v18)} · 19h: ${fmt(v19)}</span></div>
+        <div class="fstat"><span class="k">Fila das 17h (17:00–17:59)</span><b class="v" style="color:var(--part)">${fmt(v17)}</b><span class="s">vs. ${fmt(vp17_1t)} pós-17h no 1ºT</span></div>
+      `;
+      barBox.innerHTML = barDual(`Placar nas ${fmt(filtered.length)} seções filtradas`, `Lula ${fmt(v13)} × Flávio ${fmt(v22)}`, {l: v13, f: v22});
+
+      const slice = filtered.slice(0, limit);
+      tbody.innerHTML = slice.map(s => {
+        const totVal = s[5] + s[6];
+        const lPct = totVal ? (s[5] / totVal * 100) : 0;
+        const cPct = s[3] ? (s[4] / s[3] * 100) : 0;
+        const isPos18 = s[10] >= '18:00';
+        return `<tr data-href="#/${c.id}/zona/${s[0]}/${s[1]}">
+          <td><b>${s[0]}</b> <span style="color:var(--muted);font-family:var(--ui);font-size:12px">${esc(zMap[s[0]] || '')}</span></td>
+          <td><b>${s[1]}</b> <span style="color:var(--muted);font-size:11px">loc.${s[2]}</span></td>
+          <td>${isPos18 ? `<span class="flag">${s[10]}</span>` : s[10]}</td>
+          <td>${s[11] || '—'}</td>
+          <td style="font-weight:700;color:${(s[18]+s[19])>0?'var(--no)':s[13]>0?'var(--part)':'var(--muted)'}">${s[18]+s[19]} <small style="font-weight:400;color:var(--muted)">(${s[13]} pós-17h)</small></td>
+          <td>${s[17]} / <b>${s[18]}</b> / ${s[19]}</td>
+          <td style="color:var(--calc)">${s[16]}</td>
+          <td>${fmt(s[4])}/${fmt(s[3])} (${pc(cPct, 1)}%)</td>
+          <td style="color:var(--lula);font-weight:700">${fmt(s[5])} (${pc(lPct, 1)}%)</td>
+          <td style="color:var(--flavio);font-weight:700">${fmt(s[6])} (${pc(100-lPct, 1)}%)</td>
+        </tr>`;
+      }).join('') || `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted)">Nenhuma seção encontrada para este filtro.</td></tr>`;
+
+      tbody.querySelectorAll('tr[data-href]').forEach(tr => {
+        tr.onclick = () => { location.hash = tr.dataset.href; };
+      });
+
+      if(filtered.length > limit){
+        btnMore.hidden = false;
+        btnMore.textContent = `Mostrar mais seções (${fmt(slice.length)} de ${fmt(filtered.length)})`;
+      } else {
+        btnMore.hidden = true;
+      }
+    }
+
+    wrap.querySelectorAll('[data-sf]').forEach(b => {
+      b.setAttribute('aria-pressed', b.dataset.sf === statusFilter);
+      b.onclick = () => {
+        statusFilter = b.dataset.sf;
+        limit = 60;
+        wrap.querySelectorAll('[data-sf]').forEach(x => x.setAttribute('aria-pressed', x === b));
+        update();
+      };
+    });
+    if(selZona) selZona.onchange = () => { limit = 60; update(); };
+    selSort.onchange = () => { limit = 60; update(); };
+    inpSearch.oninput = () => { limit = 60; update(); };
+    btnMore.onclick = () => { limit += 100; update(); };
+
+    update();
+  });
+}
+
+function sectionExplorerHtml(c, fixedZona){
+  const defaultSf = fixedZona ? 'all' : (c.pos18.n_secoes > 0 ? 'pos18' : 'all');
+  return `<div class="card" id="sec-explorer">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+      <h3>Explorador de Seções Eleitorais ${fixedZona ? `· Zona ${fixedZona}` : `· ${esc(c.nome)}`}</h3>
+      <span class="note">Clique em qualquer seção para abrir o BU, RDV e linha do tempo da urna</span>
+    </div>
+    <p id="sec-load-status" class="note">Carregando microdados das seções...</p>
+    <div class="filters">
+      <div class="seg sm" role="group" aria-label="Recorte de horário">
+        <button type="button" data-sf="all" aria-pressed="${defaultSf==='all'}">Todas (${fmt(fixedZona ? c.secoes.filter(s=>s[0]===fixedZona).length : c.total.n_secoes)})</button>
+        <button type="button" data-sf="pos18" aria-pressed="${defaultSf==='pos18'}">Prorrogadas ≥18h (${fmt(c.pos18.n_secoes)})</button>
+        <button type="button" data-sf="pos18_voto" aria-pressed="false">Prorrogadas c/ voto pós-18h</button>
+        <button type="button" data-sf="pos18_zero" aria-pressed="false">Prorrogadas c/ 0 voto pós-17h</button>
+        <button type="button" data-sf="ate18_fila" aria-pressed="false">Fecharam &lt;18h c/ fila 17h</button>
+      </div>
+      <div class="frow">
+        ${!fixedZona && c.zonas.length > 1 ? `
+        <div class="fctrl">
+          <label for="f-zona">Filtrar por Zona Eleitoral</label>
+          <select id="f-zona">
+            <option value="all">Todas as ${c.zonas.length} Zonas de ${esc(c.nome)}</option>
+            ${c.zonas.map(z => `<option value="${z.zona}">Zona ${z.zona} — ${esc(z.nome || '')} (${z.pos18.n_secoes}/${z.total.n_secoes} prorrog.)</option>`).join('')}
+          </select>
+        </div>` : ''}
+        <div class="fctrl">
+          <label for="f-search">Buscar Seção ou Código do Local</label>
+          <input id="f-search" type="search" placeholder="Ex.: 0123 ou local 1295...">
+        </div>
+        <div class="fctrl">
+          <label for="f-sort">Ordenar por</label>
+          <select id="f-sort">
+            <option value="vp18">Mais votos pós-18h (estendido) ↓</option>
+            <option value="vp17">Mais votos pós-17h (total) ↓</option>
+            <option value="ult">Último voto mais tarde ↓</option>
+            <option value="enc">Encerramento mais tarde ↓</option>
+            <option value="vp17_1t">Mais votos pós-17h no 1ºT ↓</option>
+            <option value="zona">Zona e Seção (crescente) ↑</option>
+            <option value="lula">Maior % Lula (13) ↓</option>
+            <option value="flavio">Maior % Flávio (22) ↓</option>
+            <option value="comp">Maior comparecimento % ↓</option>
+          </select>
+        </div>
+      </div>
+      <div class="fsum" id="f-sum"></div>
+      <div id="f-bar"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="stbl">
+        <thead>
+          <tr>
+            <th>Zona</th>
+            <th>Seção / Local</th>
+            <th>Encerramento (BU)</th>
+            <th>Último Voto</th>
+            <th>Pós-18h (Pós-17h)</th>
+            <th>17h / 18h / 19h</th>
+            <th>Pós-17h (1ºT)</th>
+            <th>Comparecimento</th>
+            <th>Lula (13)</th>
+            <th>Flávio (22)</th>
+          </tr>
+        </thead>
+        <tbody id="f-tbody"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn-more" id="f-more" hidden>Mostrar mais</button>
+  </div>`;
+}
+
+/* ==================== TELAS ==================== */
+
+function home(){
+  const cidadesArr = Object.values(D.cidades);
+  const prorrogadas = cidadesArr.filter(c => c.grupo === 'prorrogada');
+  const controles = cidadesArr.filter(c => c.grupo === 'controle');
+
+  return {
+    crumbs: [],
+    html: `
+    <div class="kicker">Auditoria de Urnas · Eleições 2026 (2º Turno)</div>
+    <h1>Será que a prorrogação foi injusta?</h1>
+    <p class="lg">
+      Após a proclamação da vitória de Lula no 2º turno, a campanha de Flávio Bolsonaro anunciou que tentará a anulação do pleito alegando que a prorrogação da votação até as 19h teria alterado o equilíbrio da disputa. Para analisar os fatos com dados objetivos, auditamos urna por urna os <b>Boletins de Urna (<code>bu.dat</code>)</b>, <b>Registros Digitais do Voto (<code>rdv.dat</code>)</b> e os <b>Logs com carimbo de segundo (<code>logd.dat</code>)</b> de <b>57.744 seções eleitorais em 15 cidades brasileiras</b>.
+    </p>
+
+    <!-- Quatro Fatos Centrais -->
+    <div class="how">
+      <div class="card">
+        <h3>1. Pedidos dos dois lados</h3>
+        <p class="note">A coligação de Lula pediu prorrogação onde houve colapso de transporte público. <b>A própria campanha de Flávio também protocolou pedido de votação até as 19h</b> alegando chuvas fortes em estados do Sul e Sudeste (SC, PR e interior de SP).</p>
+      </div>
+      <div class="card">
+        <h3>2. 80%+ já tinham fechado</h3>
+        <p class="note">Quando a ordem judicial chegou aos cartórios eleitorais às 17h20, <b>mais de 80% das urnas em SP e na Bahia já haviam sido encerradas</b>. Por isso, a ampliação foi restrita às seções que continuavam abertas.</p>
+      </div>
+      <div class="card">
+        <h3>3. Só 4 de 15 cidades tiveram prorrogação</h3>
+        <p class="note">Das 15 cidades auditadas, <b>apenas 4 tiveram seções abertas até as 18h ou mais</b> (São Paulo, Salvador, Feira de Santana e Guarulhos). Nas outras 11 cidades (inclusive Curitiba, Joinville e Porto Alegre), 100% das urnas fecharam antes das 18h.</p>
+      </div>
+      <div class="card">
+        <h3>4. Efeito matemático insignificante</h3>
+        <p class="note">Somando todas as seções abertas em São Paulo e Salvador, entraram míseros <b>846 votos após as 18h</b> (606 em SP e 240 em Salvador). Em 44% das seções prorrogadas, <b>nenhum eleitor votou</b> no horário ampliado.</p>
+      </div>
+    </div>
+
+    <!-- Banner de Achado -->
+    <div class="live" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span>
+        <b>Conclusão matemática:</b> A prorrogação teve <b>baixíssima procura</b> (865 votos pós-18h nas 15 cidades: 0,0083% do comparecimento em SP e 0,0146% em Salvador). O RDV não traz horário (para preservar o sigilo do voto), logo não indica em quem votaram — mas, mesmo no limite matemático hipotético de 100% para um só lado, a fatia de qualquer candidato mudaria em no máximo 0,015 ponto percentual (e a diferença em ≤ 0,03 p.p.).
+      </span>
+    </div>
+
+    <div class="pleg">
+      <span style="--c:var(--lula)"><i></i>Lula (PT · 13)</span>
+      <span style="--c:var(--flavio)"><i></i>Flávio Bolsonaro (PL · 22)</span>
+      <span style="--c:var(--part)"><i></i>Seções Prorrogadas (≥18h)</span>
+    </div>
+
+    <!-- Tabela consolidada das 15 cidades -->
+    <section style="display:grid;gap:12px">
+      <h2>Tabela Consolidada das 15 Cidades Auditadas</h2>
+      <p class="sub">Auditoria direta dos Boletins de Urna e logs de 57.744 seções eleitorais:</p>
+
+      <div class="tbl-wrap">
+        <table class="city-tbl">
+          <thead>
+            <tr>
+              <th>Cidade</th>
+              <th>Seções c/ BU</th>
+              <th>Abertas ≥18h</th>
+              <th>Votos após 18h</th>
+              <th>Fila normal 17h</th>
+              <th>Pós-17h 1ºT</th>
+              <th>Resultado (Lula × Flávio)</th>
+              <th>Comparecimento</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${cidadesArr.map(c => {
+              const s2 = share(c.total);
+              const compPct = c.total.aptos ? (c.total.comp / c.total.aptos * 100) : 0;
+              const isProrrog = c.pos18.n_secoes > 0;
+              return `<tr>
+                <td>
+                  <a href="#/${c.id}">
+                    <b>${esc(c.nome)}</b> <span style="color:var(--muted);font-size:11px">(${c.uf})</span>
+                    ${isProrrog ? '<span class="flag">Prorrogada</span>' : '<span class="flag ok">Controle</span>'}
+                  </a>
+                </td>
+                <td>${fmt(c.total.n_secoes)}</td>
+                <td style="font-weight:700;color:${isProrrog ? 'var(--part)' : 'var(--muted)'}">${fmt(c.pos18.n_secoes)}</td>
+                <td style="font-weight:700;color:${c.pos18.votos_pos18 > 0 ? 'var(--no)' : 'var(--muted)'}">${fmt(c.pos18.votos_pos18)}</td>
+                <td style="color:var(--muted)">${fmt(c.total.votos_17h)}</td>
+                <td style="color:var(--calc)">${fmt(c.total.votos_1t_pos17)}</td>
+                <td><b style="color:var(--lula)">${pc(s2, 1)}%</b> × <b style="color:var(--flavio)">${pc(100-s2, 1)}%</b></td>
+                <td>${pc(compPct, 1)}%</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        * <b>Feira de Santana:</b> 1.218 seções com BU processadas (308 seções constam no sistema do TSE como "Recebida" aguardando homologação final).<br>
+        * <b>Fila normal 17h:</b> votos registrados entre 17:00 e 17:59 de eleitores que já estavam na fila com senha às 17h (presente em 100% das cidades brasileiras).
+      </p>
+    </section>
+
+    <!-- As 4 Cidades com Prorrogação em destaque -->
+    <section style="display:grid;gap:12px">
+      <h2>As 4 Cidades que Tiveram Seções Abertas ≥ 18h</h2>
+      <p class="sub">Nas 4 cidades onde houve prorrogação, a procura após as 18h foi residual:</p>
+
+      <div class="doors">
+        ${prorrogadas.map(c => `
+          <a class="door" href="#/${c.id}">
+            <span class="t"><b>${esc(c.nome)}</b><span>${fmt(c.total.n_secoes)} seções ›</span></span>
+            ${pies(c.t1, c.t2)}
+            <div class="tags">
+              <span class="tag" style="--c:var(--part)">${fmt(c.pos18.n_secoes)} seções ≥18h (${pc(c.pos18.n_secoes/c.total.n_secoes*100)}%)</span>
+              <span class="tag" style="--c:var(--no)">${fmt(c.pos18.votos_pos18)} votos após 18h</span>
+              <span class="tag" style="--c:var(--ok)">${fmt(c.pos18.sem_voto_pos17)} abertas c/ 0 votos pós-17h</span>
+            </div>
+            <p>Vantagem de Lula: <b>${sgn(c.total.l - c.total.f)} votos</b>. Votos após as 18h representam menos de <b>0,03%</b> da cidade.</p>
+          </a>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- As 11 Cidades de Controle -->
+    <section style="display:grid;gap:10px">
+      <h2>As 11 Cidades de Controle (0 seções abertas após 18h)</h2>
+      <p class="sub">Cidades onde 100% das urnas fecharam pontualmente às 17h (incluindo onde a chuva foi citada):</p>
+      <div class="list" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
+        ${controles.map(c => `
+          <a class="row" href="#/${c.id}">
+            <span class="nm">${esc(c.nome)} (${c.uf})<small>${fmt(c.total.n_secoes)} seções · Comp. ${pc(c.total.comp/c.total.aptos*100, 1)}%</small></span>
+            <span class="go" aria-hidden="true">›</span>
+            <span class="rg">
+              <span>2ºT: <b style="color:${leadC(marg(c.total))}">${lead(marg(c.total))} ${pc(Math.max(share(c.total), 100-share(c.total)), 1)}%</b></span>
+              <span class="flag ok">0 prorrogadas</span>
+              <b class="rd" style="--c:var(--ok)">100% fecharam 17h</b>
+            </span>
+          </a>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- Notícias e Fatos Jornalísticos -->
+    <section style="display:grid;gap:12px">
+      <h2>Notícias e Cobertura da Imprensa</h2>
+      <p class="sub">Fatos documentados pela Agência Brasil no dia da eleição:</p>
+      <div class="how">
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/campanha-de-flavio-pede-votacao-ate-19h-por-chuvas-em-alguns-estados" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+          <span class="news-title">Campanha de Flávio pede votação até 19h por chuvas em alguns estados ›</span>
+          <span class="news-desc">Assim como a coligação governista, a campanha de Flávio Bolsonaro acionou o TSE pedindo extensão até as 19h em redutos do Sul e Sudeste.</span>
+        </a>
+
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/lula-pede-prorrogacao-de-votacao-em-cidades-com-falhas-no-transporte" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+          <span class="news-title">Lula pede prorrogação de votação em cidades com falhas no transporte ›</span>
+          <span class="news-desc">Coligação de Lula apontou diminuição de frotas de ônibus na Bahia e em São Paulo, solicitando extensão de duas horas.</span>
+        </a>
+
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/em-sp-80-das-urnas-estavam-encerradas-quando-votacao-foi-prorrogada" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Justiça · 25/10/2026</span>
+          <span class="news-title">Em SP, 80% das urnas estavam encerradas quando votação foi prorrogada ›</span>
+          <span class="news-desc">TSE informou ao STF que mais de 80% das seções de São Paulo já haviam encerrado às 17h, levando Zanin a restringir a medida às urnas ainda operantes.</span>
+        </a>
+
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/prorrogacao-da-votacao-teve-baixa-procura-e-frustracao-de-eleitores" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+          <span class="news-title">Prorrogação da votação teve baixa procura e frustração de eleitores ›</span>
+          <span class="news-desc">Mesários relataram salas praticamente desertas entre 17h e 19h. O volume de eleitores no horário ampliado foi residual.</span>
+        </a>
+
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/centrais-sindicais-criticam-falta-de-onibus-no-dia-da-eleicao" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Geral · 25/10/2026</span>
+          <span class="news-title">Centrais sindicais criticam falta de ônibus no dia da eleição ›</span>
+          <span class="news-desc">Passageiros denunciaram intervalos de até três horas entre ônibus municipais e intermunicipais em áreas periféricas.</span>
+        </a>
+
+        <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/flavio-nao-reconhece-vitoria-de-lula-e-tentara-anulacao-do-pleito" target="_blank" rel="noopener">
+          <span class="news-time">Agência Brasil · Política · 26/10/2026</span>
+          <span class="news-title">Flávio não reconhece vitória de Lula e tentará anulação do pleito ›</span>
+          <span class="news-desc">Candidato derrotado declarou que não reconhece o resultado proclamado pelo TSE e anunciou ações questionando a decisão judicial.</span>
+        </a>
+      </div>
+    </section>
+    `
+  };
+}
+
+function cidadeView(c){
+  const outrosSum = (c.t1 && c.t1.outros) ? c.t1.outros.reduce((a, x) => a + x[1], 0) : 0;
+  return {
+    crumbs: [[c.nome]],
+    back: '#/',
+    afterRender: () => {
+      mountSectionExplorer(c, null);
+    },
+    html: `
+    <div class="kicker">${c.uf} · Município TSE ${c.mun} · ${fmt(c.total.n_secoes)} seções totalizadas (${fmt(c.total.n_locais)} locais)</div>
+    <h2>${esc(c.nome)}</h2>
+
+    ${compareBlock(c.t1, c.t2)}
+
+    ${prorrogacaoCard(`Auditoria de Horário em ${c.nome}`, c.total, c.pos18, c.ate18, c, c.nota_status)}
+
+    ${zoneMapBlock(c)}
+
+    ${c.zonas && c.zonas.length > 1 ? `
+    <section style="display:grid;gap:10px">
+      <h3>Zonas Eleitorais de ${esc(c.nome)} (${c.zonas.length} zonas)</h3>
+      <p class="note">Toque em uma Zona para ver os colégios eleitorais e filtrar suas seções:</p>
+      <div class="list">
+        ${c.zonas.map(z => zoneRow(c.id, z)).join('')}
+      </div>
+    </section>` : ''}
+
+    ${sectionExplorerHtml(c, null)}
+
+    ${outrosSum > 0 ? `
+    <section style="display:grid;gap:10px">
+      <h3>Outros candidatos no 1º turno em ${esc(c.nome)}</h3>
+      <div class="card">
+        <span class="big">${fmt(outrosSum)}</span>
+        <p>votos válidos (${pc(outrosSum / c.t1.validos * 100, 2)}%) foram para outros candidatos no 1º turno em ${esc(c.nome)}.</p>
+        <div class="pool">
+          ${c.t1.outros.slice(0, 6).map(([n, v]) => `<div class="r"><b>${esc(n)}</b><span>${fmt(v)} (${pc(v/c.t1.validos*100, 2)}%)</span><div class="t"><i style="width:${v / c.t1.outros[0][1] * 100}%"></i></div></div>`).join('')}
+        </div>
+      </div>
+    </section>` : ''}
+    `
+  };
+}
+
+function zonaView(c, z){
+  const idx = c.zonas.indexOf(z);
+  const prev = c.zonas[(idx - 1 + c.zonas.length) % c.zonas.length];
+  const next = c.zonas[(idx + 1) % c.zonas.length];
+
+  return {
+    crumbs: [[c.nome, `#/${c.id}`], [`Zona ${z.zona} (${z.nome || z.zona})`]],
+    back: `#/${c.id}`,
+    afterRender: () => {
+      mountSectionExplorer(c, z.zona);
+    },
+    html: `
+    <div class="kicker">${esc(c.nome)} (${c.uf}) · Zona Eleitoral ${z.zona} · ${fmt(z.total.n_secoes)} seções em ${fmt(z.total.n_locais)} locais</div>
+    <h2>Zona ${z.zona} ${z.nome ? `· ${esc(z.nome)}` : ''}</h2>
+    ${z.bairros ? `<p class="sub"><b>Bairros abrangidos:</b> ${esc(z.bairros)}</p>` : ''}
+
+    <div class="card">
+      <h3>Resultado do 2º Turno na Zona ${z.zona}</h3>
+      ${barDual(`Votos válidos na Zona ${z.zona}`, `Comparecimento: ${fmt(z.total.comp)} de ${fmt(z.total.aptos)} (${pc(z.total.comp/z.total.aptos*100, 2)}%)`, z.total)}
+      <div class="growth">
+        <div class="gt" style="--c:var(--lula)">
+          <span class="who2"><i></i>Lula (13)</span>
+          <b class="gbig">${pc(share(z.total), 2)}%</b>
+          <span class="gsub"><b>${fmt(z.total.l)}</b> votos válidos</span>
+        </div>
+        <div class="gt" style="--c:var(--flavio)">
+          <span class="who2"><i></i>Flávio (22)</span>
+          <b class="gbig">${pc(100 - share(z.total), 2)}%</b>
+          <span class="gsub"><b>${fmt(z.total.f)}</b> votos válidos</span>
+        </div>
+        <div class="gt" style="--c:var(--outros)">
+          <span class="who2"><i></i>Brancos e Nulos</span>
+          <b class="gbig">${fmt(z.total.brancos + z.total.nulos)}</b>
+          <span class="gsub">Brancos: <b>${fmt(z.total.brancos)}</b> · Nulos: <b>${fmt(z.total.nulos)}</b></span>
+        </div>
+      </div>
+    </div>
+
+    ${prorrogacaoCard(`Auditoria de Horário na Zona ${z.zona}`, z.total, z.pos18, z.ate18, z)}
+
+    ${sectionExplorerHtml(c, z.zona)}
+
+    <div class="list" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
+      ${zoneRow(c.id, prev)}
+      ${zoneRow(c.id, next)}
+    </div>
+    `
+  };
+}
+
+function secaoView(c, z, s){
+  const id = 'c' + (++uid);
+  const hrs = ['8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h'];
+  const vh = s[20] || [];
+  const isPos18 = s[10] >= '18:00';
+  const totObj = {l: s[5], f: s[6], validos: s[5] + s[6]};
+  const sPct = share(totObj);
+  const cPct = s[3] ? (s[4] / s[3] * 100) : 0;
+
+  PEND.push({id, make:(el, reduce) => {
+    const accent = css('--accent'), part = css('--part'), ink = css('--ink');
+    return new Chart(el, {
+      type: 'bar',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: hrs,
+        datasets: [{
+          label: 'Votos computados por hora (logd.dat)',
+          data: vh,
+          backgroundColor: hrs.map((_, i) => (i + 8) >= 17 ? part : accent),
+          borderRadius: 5, maxBarThickness: 54
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: reduce ? false : {duration: 500},
+        layout: {padding: {top: 28}},
+        plugins: {
+          legend: {display: false},
+          datalabels: {
+            anchor: 'end', align: 'end', color: ink,
+            font: {family: 'JetBrains Mono, monospace', weight: '700', size: 12},
+            formatter: v => v > 0 ? v : ''
+          }
+        },
+        scales: {
+          x: {grid: {display: false}, ticks: {font: {size: 13, weight: '700'}, color: ink}},
+          y: {beginAtZero: true}
+        }
+      }
+    });
+  }});
+
+  return {
+    crumbs: [[c.nome, `#/${c.id}`], [`Zona ${z.zona}`, `#/${c.id}/zona/${z.zona}`], [`Seção ${s[1]}`]],
+    back: `#/${c.id}/zona/${z.zona}`,
+    html: `
+    <div class="kicker">${esc(c.nome)} (${c.uf}) · Zona ${z.zona} (${esc(z.nome || z.zona)}) · Local de Votação #${s[2]}</div>
+    <h2>Seção ${s[1]} · Zona ${z.zona}</h2>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h3>Boletim de Urna (<code>bu.dat</code>) &amp; Conferência RDV</h3>
+        <span class="badge ${isPos18 ? 'aberto' : 'doc'}">${isPos18 ? `Seção Prorrogada · Encerrou às ${s[10]}` : `Encerramento Normal · ${s[10]}`}</span>
+      </div>
+      ${barDual(`Votos nominais na Seção ${s[1]}`, `Lula ${s[5]} (${pc(sPct, 2)}%) × Flávio ${s[6]} (${pc(100-sPct, 2)}%)`, totObj)}
+      <div class="growth">
+        <div class="gt" style="--c:var(--lula)">
+          <span class="who2"><i></i>Lula (13)</span>
+          <b class="gbig">${fmt(s[5])}</b>
+          <span class="gsub"><b>${pc(sPct, 2)}%</b> dos válidos</span>
+        </div>
+        <div class="gt" style="--c:var(--flavio)">
+          <span class="who2"><i></i>Flávio (22)</span>
+          <b class="gbig">${fmt(s[6])}</b>
+          <span class="gsub"><b>${pc(100 - sPct, 2)}%</b> dos válidos</span>
+        </div>
+        <div class="gt" style="--c:var(--accent)">
+          <span class="who2"><i></i>Comparecimento</span>
+          <b class="gbig">${pc(cPct, 1)}%</b>
+          <span class="gsub"><b>${fmt(s[4])}</b> eleitores de <b>${fmt(s[3])}</b> aptos<br>Brancos: <b>${s[7]}</b> · Nulos: <b>${s[8]}</b></span>
+        </div>
+        <div class="gt" style="--c:var(--ok)">
+          <span class="who2"><i></i>Auditoria RDV × BU</span>
+          <b class="gbig">${s[21] === s[4] ? '100%' : '≠'}</b>
+          <span class="gsub">BU: <b>${s[4]}</b> votos · RDV: <b>${s[21]}</b> votos<br>Eventos no log (25/10): <b>${s[22]}</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Linha do Tempo da Urna em 25/10/2026 (Horário de Brasília)</h3>
+      <div class="fsum">
+        <div class="fstat"><span class="k">Abertura (BU)</span><b class="v">${s[9] || '—'}</b><span class="s">Início da votação</span></div>
+        <div class="fstat"><span class="k">Último voto (Log)</span><b class="v" style="color:${s[11]>='17:00:00'?'var(--part)':'var(--ink)'}">${s[11] || '—'}</b><span class="s">Último eleitor computado</span></div>
+        <div class="fstat"><span class="k">Comando Encerrar (Log)</span><b class="v">${s[12] || '—'}</b><span class="s">Operador selecionou encerrar</span></div>
+        <div class="fstat"><span class="k">Encerramento (BU)</span><b class="v" style="color:${isPos18?'var(--part)':'var(--ok)'}">${s[10] || '—'}</b><span class="s">${isPos18 ? 'Ficou aberta ≥18h' : 'Fechou no horário padrão'}</span></div>
+      </div>
+
+      <div class="diff">
+        <div class="dl">
+          <span class="dk">Votos após as 18h (estendido)</span>
+          <b class="dv" style="color:${(s[18]+s[19])>0?'var(--no)':'var(--ok)'}">${s[18]+s[19]} votos pós-18h</b>
+          <span class="dd">
+            18h: <b>${s[18]}</b> · 19h: <b>${s[19]}</b><br>
+            Fila normal das 17h: <b>${s[17]}</b> votos
+          </span>
+        </div>
+        <div class="dl">
+          <span class="dk">Comparativo com o 1º Turno na mesma urna</span>
+          <b class="dv" style="color:var(--calc)">${s[16]} votos pós-17h no 1ºT</b>
+          <span class="dd">
+            Total de votos computados no log do 1º turno: <b>${fmt(s[15])}</b><br>
+            Diferença de fila (2ºT pós-17h − 1ºT): <b>${sgn(s[13] - s[16])} votos</b>
+          </span>
+        </div>
+      </div>
+
+      <h3 style="margin-top:6px">Votos Computados por Hora na Seção ${s[1]} (8h às 19h)</h3>
+      <div class="cv md"><canvas id="${id}"></canvas></div>
+    </div>
+    `
+  };
+}
+
+function noticiasView(){
+  return {
+    crumbs: [['Notícias & Fatos']],
+    back: '#/',
+    html: `
+    <div class="kicker">Contexto e Fontes Jornalísticas · Eleições 2026</div>
+    <h2>Notícias e Cronologia dos Fatos</h2>
+    <p class="lg">
+      Todas as reportagens abaixo foram publicadas pela <b>Agência Brasil</b> no dia da votação do 2º turno (25/10/2026) e no dia seguinte, atestando que a ampliação foi solicitada por ambas as campanhas e teve impacto prático insignificante:
+    </p>
+
+    <div class="list">
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/campanha-de-flavio-pede-votacao-ate-19h-por-chuvas-em-alguns-estados" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+        <span class="news-title">Campanha de Flávio pede votação até 19h por chuvas em alguns estados ›</span>
+        <span class="news-desc">A coligação de Flávio Bolsonaro também acionou o TSE e a Justiça Eleitoral requerendo a prorrogação da votação até as 19h em municípios afetados por tempestades em Santa Catarina, Paraná e interior de São Paulo.</span>
+      </a>
+
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/lula-pede-prorrogacao-de-votacao-em-cidades-com-falhas-no-transporte" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+        <span class="news-title">Lula pede prorrogação de votação em cidades com falhas no transporte ›</span>
+        <span class="news-desc">A campanha de Lula acionou o STF após denúncias de redução expressiva na oferta de ônibus e transporte público gratuito em capitais e periferias.</span>
+      </a>
+
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/em-sp-80-das-urnas-estavam-encerradas-quando-votacao-foi-prorrogada" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Justiça · 25/10/2026</span>
+        <span class="news-title">Em SP, 80% das urnas estavam encerradas quando votação foi prorrogada ›</span>
+        <span class="news-desc">O Tribunal Superior Eleitoral informou ao STF que mais de 80% das seções de São Paulo já haviam encerrado os trabalhos às 17h quando a ordem judicial foi expedida, levando o ministro Zanin a restringir a medida às urnas ainda operantes.</span>
+      </a>
+
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/prorrogacao-da-votacao-teve-baixa-procura-e-frustracao-de-eleitores" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Política · 25/10/2026</span>
+        <span class="news-title">Prorrogação da votação teve baixa procura e frustração de eleitores ›</span>
+        <span class="news-desc">Mesários e fiscais partidários relataram que as seções que permaneceram abertas ficaram praticamente desertas entre 17h e 19h, confirmando a baixíssima adesão do eleitorado no período estendido.</span>
+      </a>
+
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/justica/noticia/2026-10/centrais-sindicais-criticam-falta-de-onibus-no-dia-da-eleicao" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Geral · 25/10/2026</span>
+        <span class="news-title">Centrais sindicais criticam falta de ônibus no dia da eleição ›</span>
+        <span class="news-desc">Entidades sindicais e movimentos sociais denunciaram intervalos de até três horas entre viagens de ônibus municipais e intermunicipais em áreas periféricas.</span>
+      </a>
+
+      <a class="news-item" href="https://agenciabrasil.ebc.com.br/politica/noticia/2026-10/flavio-nao-reconhece-vitoria-de-lula-e-tentara-anulacao-do-pleito" target="_blank" rel="noopener">
+        <span class="news-time">Agência Brasil · Política · 26/10/2026</span>
+        <span class="news-title">Flávio não reconhece vitória de Lula e tentará anulação do pleito ›</span>
+        <span class="news-desc">Em pronunciamento, o candidato do PL declarou que não reconhece o resultado proclamado pelo TSE e anunciou ações judiciais questionando a decisão monocrática de prorrogação.</span>
+      </a>
+    </div>
+    `
+  };
+}
+
+function metodologiaView(){
+  return {
+    crumbs: [['Metodologia']],
+    back: '#/',
+    html: `
+    <div class="kicker">Documentação Técnica · Auditoria de Urnas 2º Turno 2026</div>
+    <h2>Fontes e Como a Conta é Feita</h2>
+
+    <div class="card">
+      <h3>1. De onde vêm os arquivos brutos</h3>
+      <p class="note">
+        Todos os dados deste painel foram extraídos diretamente dos arquivos oficiais de urna publicados pelo TSE para o 2º turno presidencial (pleito <code>3221</code> / eleição <code>6258</code>) e 1º turno (eleição <code>6257</code>) em <code>resultados.tse.jus.br/oficial/ele2026/arquivo-urna/3221/</code>:
+      </p>
+      <div class="pool">
+        <div class="r"><b><code>bu.dat</code> (Boletim de Urna · ASN.1 BER)</b><span>Votos por candidato, aptos, comparecimento, abertura e encerramento</span></div>
+        <div class="r"><b><code>rdv.dat</code> (Registro Digital do Voto · ASN.1 BER)</b><span>Lista embaralhada de cada voto individual (sem horário, para sigilo)</span></div>
+        <div class="r"><b><code>log.jez</code> → <code>logd.dat</code> (Log de Eventos com suporte aninhado)</b><span>Cada voto computado com timestamp exato ao segundo (inclusive urnas substituídas)</span></div>
+        <div class="r"><b><code>*6257-u.json</code> e <code>*6258-u.json</code> (Totalização Oficial do TSE)</b><span>Totais oficiais por município no 1º e no 2º turno (100% totalizado)</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Critério de seção prorrogada e separação de horários</h3>
+      <p class="note">
+        • <b>Fuso horário de Brasília:</b> Os horários gravados no BU e no log da urna seguem o relógio local da urna. Para Cuiabá (MT, UTC-4), somamos <b>+1 hora</b> a todos os registros para alinhar ao horário oficial de Brasília.<br>
+        • <b>Separação entre pós-17h e pós-18h:</b> Em 100% das cidades do país, eleitores que chegam até as 17h recebem senha e votam entre 17:00 e 17:59 (fila normal). Apenas as seções que encerraram com <code>encerramento &ge; "18:00"</code> e os votos após as 18h00 decorrem da decisão judicial de prorrogação.<br>
+        • <b>Logs aninhados decodificados e conferência de integridade:</b> O <code>rdv.dat</code> confere 100% com o comparecimento do <code>bu.dat</code> em todas as 57.744 seções. Nos logs (<code>log.jez</code>), o extrator decodifica recursivamente arquivos <code>.jez</code> aninhados de urnas substituídas e desduplica as linhas, batendo 100% com o BU em <b>57.743 de 57.744 seções (99,998%)</b>. A única exceção é a seção <code>0395/0298</code> de Guarulhos (268 votos no BU e no RDV, encerrada às <code>17:03:06</code>), para a qual o TSE não publicou o arquivo <code>log.jez</code> no pacote da seção — como ela fechou às 17:03, isso não altera nenhuma contagem pós-17h ou pós-18h.
+      </p>
+    </div>
+    `
+  };
+}
+
+function nf(){
+  return {crumbs: [['Não encontrado']], back: '#/', html: `<h2>Página não encontrada</h2><p><a href="#/">Voltar ao início</a></p>`};
+}
+
+/* Roteador hash */
+function route(keepScroll){
+  PEND = [];
+  const raw = location.hash.replace(/^#\/?/, '') || '';
+  const parts = raw.split('/').filter(Boolean).map(decodeURIComponent);
+  let v;
+
+  if(!parts.length) v = home();
+  else if(parts[0] === 'noticias') v = noticiasView();
+  else if(parts[0] === 'metodologia') v = metodologiaView();
+  else if(D.cidades[parts[0]]){
+    const c = D.cidades[parts[0]];
+    if(!parts[1]) v = cidadeView(c);
+    else if(parts[1] === 'zona' && parts[2]){
+      const z = c.zonas.find(x => x.zona === parts[2].padStart(4, '0') || x.zona === parts[2]);
+      if(!z) v = nf();
+      else if(!parts[3]) v = zonaView(c, z);
+      else {
+        carregarSecoesCidade(c.id, secoesList => {
+          c.secoes = secoesList;
+          const secCode = parts[3].padStart(4, '0');
+          const s = c.secoes.find(x => x[0] === z.zona && (x[1] === secCode || x[1] === parts[3]));
+          const sv = s ? secaoView(c, z, s) : nf();
+          V.innerHTML = sv.html;
+          initCharts();
+        });
+        v = {crumbs: [[c.nome, `#/${c.id}`], [`Zona ${z.zona}`, `#/${c.id}/zona/${z.zona}`], [`Seção ${parts[3]}`]], back: `#/${c.id}/zona/${z.zona}`, html: '<p class="note">Carregando dados da seção...</p>'};
+      }
+    } else v = nf();
+  } else v = nf();
+
+  V.innerHTML = v.html;
+  initCharts();
+  if(v.afterRender) v.afterRender();
+
+  V.classList.remove('enter');
+  void V.offsetWidth;
+  V.classList.add('enter');
+
+  const navKey = !parts.length ? 'home' : parts[0];
+  document.querySelectorAll('.top-bar a[data-nav]').forEach(a => {
+    if(a.dataset.nav === navKey) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  if(qCity){
+    const hasOpt = Array.from(qCity.options).some(o => o.value === parts[0]);
+    qCity.value = hasOpt ? parts[0] : '';
+  }
+
+  const cr = document.getElementById('crumbs');
+  const all = [['Início', '#/'], ...v.crumbs];
+  cr.innerHTML = all.map((c, i) => i === all.length - 1
+    ? `<span aria-current="page">${esc(c[0])}</span>`
+    : `<a href="${c[1]}">${esc(c[0])}</a>`
+  ).join('<i aria-hidden="true">›</i>');
+
+  const bk = document.getElementById('back');
+  if(v.back){ bk.hidden = false; bk.href = v.back; }
+  else bk.hidden = true;
+
+  const last = all[all.length - 1][0];
+  document.title = (all.length > 1 ? last + ' · ' : '') + 'Será que a prorrogação foi injusta?';
+  if(!keepScroll) window.scrollTo(0, 0);
+}
+
+// Clique nos botões do mapa de zonas
+V.addEventListener('click', e => {
+  const b = e.target.closest('[data-zm]');
+  if(!b) return;
+  zMapMode = b.dataset.zm;
+  const card = b.closest('#zmap-card');
+  card.querySelectorAll('[data-zm]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  const cid = (location.hash.replace(/^#\/?/, '').split('/')[0]) || '';
+  const c = D.cidades[cid];
+  if(c){
+    document.getElementById('ztmap').innerHTML = renderZoneTiles(c);
+    document.getElementById('zscale').innerHTML = zoneScaleTxt(zMapMode);
+  }
+});
+
+window.addEventListener('hashchange', () => route());
+document.getElementById('upd').textContent = 'Atualizado em ' + D.atualizado + '.';
+route();
+})();
+</script>
+</body></html>

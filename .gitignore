@@ -1,0 +1,18 @@
+# Virtual environment & Python caches
+.venv/
+__pycache__/
+*.pyc
+
+# Raw downloaded TSE election archives (~13 GB)
+dados/*_*
+!dados/secoes_resumo.csv
+dados/acrelandia_2t/
+dados/*.log
+*.log
+
+# Investigation scratch files
+investigacao_cdn_2026_2t/
+
+# OS files
+.DS_Store
+Thumbs.db
